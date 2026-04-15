@@ -46,3 +46,15 @@ def send_messages():
             print("Error sending message.")
             break
         
+# Start the receive thread
+receive_thread = threading.Thread(target=receive_messages)
+receive_thread.daemon = True
+receive_thread.start()
+
+# Start sending messages in the main thread
+send_messages()
+
+# Close the socket when done
+clientSocket.close()
+print("Client socket closed.")
+        
