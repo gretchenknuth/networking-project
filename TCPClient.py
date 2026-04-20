@@ -14,6 +14,20 @@ try:
 except Exception as e:
     print(f"Failed to connect to server: {e}")
     exit(1)
+    
+'''
+3: Wait for the server to request a username
+4: Input the username from the user and send it to the server
+'''
+try:
+    # prompt = clientSocket.recv(1024).decode()
+    # print(prompt)
+    username = input("Enter your username: ")
+    clientSocket.sendall(username.encode())
+except Exception as e:
+    print(f"Error during username setup: {e}")
+    clientSocket.close()
+    exit(1)
 
 # Display the client’s local address and port information
 print(f"Client is running on {clientSocket.getsockname()}")
@@ -25,7 +39,7 @@ Start a background thread to continuously:
 '''
 def receive_messages():
     while True:
-        try:
+        try:            
             message = clientSocket.recv(1024).decode()
             if message:
                 print(f"\nReceived: {message}")
@@ -35,6 +49,7 @@ def receive_messages():
         except:
             print("\nError receiving message.")
             break
+    clientSocket.close()
         
 '''
 In the main thread, repeatedly:
