@@ -19,15 +19,21 @@ except Exception as e:
 3: Wait for the server to request a username
 4: Input the username from the user and send it to the server
 '''
-try:
-    # prompt = clientSocket.recv(1024).decode()
-    # print(prompt)
-    username = input("Enter your username: ")
-    clientSocket.sendall(username.encode())
-except Exception as e:
-    print(f"Error during username setup: {e}")
-    clientSocket.close()
-    exit(1)
+while True:
+    try:
+        prompt = clientSocket.recv(1024).decode()
+        print(prompt, end='')  # Print the prompt without adding a new line
+    
+        # if asked, give the server a username to identify this client
+        if "username" in prompt.lower() or "another" in prompt.lower():  
+            username = input()
+            clientSocket.sendall(username.encode())
+        else: # if the server sent something else, ignore it
+            break
+    except Exception as e:
+        print(f"Error during username setup: {e}")
+        clientSocket.close()
+        exit(1)
 
 # Display the client’s local address and port information
 print(f"Client is running on {clientSocket.getsockname()}")
