@@ -6,8 +6,14 @@ serverName = ""
 serverPort = 45231
 
 # create TCP socket and connect to server
-clientSocket = socket(AF_INET, SOCK_STREAM)
-clientSocket.connect((serverName, serverPort))
+try:
+    print(f"Connecting to server at {serverName}:{serverPort}...")
+    clientSocket = socket(AF_INET, SOCK_STREAM)
+    clientSocket.connect((serverName, serverPort))
+    print("Connected to server.")
+except Exception as e:
+    print(f"Failed to connect to server: {e}")
+    exit(1)
 
 # Display the client’s local address and port information
 print(f"Client is running on {clientSocket.getsockname()}")
