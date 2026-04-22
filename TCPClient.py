@@ -1,5 +1,6 @@
 from socket import *
 import threading
+import time
 
 # servername = server IP
 serverName = ""
@@ -20,9 +21,8 @@ except Exception as e:
 4: Input the username from the user and send it to the server
 '''
 try:
-    # prompt = clientSocket.recv(1024).decode()
-    # print(prompt)
-    username = input("Enter your username: ")
+    prompt = clientSocket.recv(1024).decode()
+    username = input(prompt)
     clientSocket.sendall(username.encode())
 except Exception as e:
     print(f"Error during username setup: {e}")
@@ -65,6 +65,7 @@ def send_messages():
         except:
             print("Error sending message.")
             break
+        time.sleep(0.1)  # Small delay to prevent overwhelming the server
         
 # Start the receive thread
 receive_thread = threading.Thread(target=receive_messages)
