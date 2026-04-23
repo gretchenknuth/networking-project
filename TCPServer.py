@@ -13,7 +13,6 @@ def encrypt_msg(message):
 def decrypt_msg(token):
     return cipher_suite.decrypt(token).decode()
 
-# Replace '' with our IP address for vid!!
 IP = "172.20.10.2"
 PORT = 45231
 active_clients = {} # username -> socket
@@ -51,6 +50,7 @@ def handle_client(conn, addr, user):
                         if client != conn:
                             client.sendall(msg)
                 print(f"\nReceived (Encrypted): {msg}")
+                print(cipher_suite.decrypt(msg))
         except Exception as e:
             print(f"Error handling client {user}: {e}") 
             break

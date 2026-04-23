@@ -1,1 +1,5 @@
+Networking final project - Gretchen Knuth, Yoyi Liao
 
+To run this program you need to run `pip install cryptography`
+
+Then you can run TCPServer and TCPClient on separate terminals/devices. Make sure to update the IP address and port number on each file to reflect your current environment.

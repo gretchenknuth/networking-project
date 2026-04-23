@@ -1,6 +1,5 @@
 from socket import *
 import threading
-import time
 
 # feature 3: AES encryption for messages
 from cryptography.fernet import Fernet
