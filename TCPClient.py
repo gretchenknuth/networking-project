@@ -33,9 +33,9 @@ except Exception as e:
 4: Input the username from the user and send it to the server
 '''
 try:
-    prompt = clientSocket.recv(1024).decode()
+    prompt = decrypt_msg(clientSocket.recv(1024))
     username = input(prompt)
-    clientSocket.sendall(username.encode())
+    clientSocket.sendall(encrypt_msg(username))
 except Exception as e:
     print(f"Error during username setup: {e}")
     clientSocket.close()

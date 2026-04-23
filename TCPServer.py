@@ -39,19 +39,16 @@ def handle_client(conn, addr, user):
 
                 with clients_lock:
                     if target in active_clients:
-                        active_clients[target].sendall(f"[from {user}] {content}".encode())
-                        conn.sendall(f"[to {target}] {content}".encode())
+                        active_clients[target].sendall(encrypt_msg(f"[from {user}] {content}"))
+                        conn.sendall(encrypt_msg(f"[to {target}] {content}"))
                     else:
-                        conn.sendall(f"User '{target}' not found".encode())
-                target_conn.sendall(encrypt_msg(f"[from {user}] {content}"))
+                        conn.sendall(encrypt_msg(f"User '{target}' not found"))
             else:
                 # Broadcast message to all other clients
                 with clients_lock:
                     for other_user, client in active_clients.items():
                         if client != conn:
-                            client.sendall(f"[from {user}] {message}".encode())
-                # ENCRYPT here before broadcasting
-                broadcast_encrypted(data, conn)
+                            client.sendall(encrypt_msg(f"[from {user}] {message}"))
         except Exception as e:
             print(f"Error handling client {user}: {e}") 
             break
@@ -81,17 +78,17 @@ while True:
     connection_socket, client_addr = server_socket.accept()
 
     # Ask client for username
-    connection_socket.sendall("Enter username: ".encode())
-    username = connection_socket.recv(1024).decode().strip()
+    connection_socket.sendall(encrypt_msg("Enter username: "))
+    username = decrypt_msg(connection_socket.recv(1024)).strip()
 
     with clients_lock:
         # Ensure unique usernames without spaces
         while username in active_clients or " " in username:
             if username in active_clients:
-                connection_socket.sendall("Username taken. Try another: ".encode())
+                connection_socket.sendall(encrypt_msg("Username taken. Try another: "))
             else:
-                connection_socket.sendall("Username cannot contain spaces. Try another: ".encode())
-            username = connection_socket.recv(1024).decode().strip()
+                connection_socket.sendall(encrypt_msg("Username cannot contain spaces. Try another: "))
+            username = decrypt_msg(connection_socket.recv(1024)).strip()
         # Add username and socket to client dict
         active_clients[username] = connection_socket
 
