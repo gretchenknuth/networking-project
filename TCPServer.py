@@ -46,9 +46,11 @@ def handle_client(conn, addr, user):
             else:
                 # Broadcast message to all other clients
                 with clients_lock:
+                    msg = encrypt_msg(f"[from {user}] {message}")
                     for other_user, client in active_clients.items():
                         if client != conn:
-                            client.sendall(encrypt_msg(f"[from {user}] {message}"))
+                            client.sendall(msg)
+                print(f"\nReceived (Encrypted): {msg}")
         except Exception as e:
             print(f"Error handling client {user}: {e}") 
             break
