@@ -1,6 +1,7 @@
 from socket import *
 import threading
 import time
+
 # feature 3: AES encryption for messages
 from cryptography.fernet import Fernet
 
@@ -51,16 +52,18 @@ Start a background thread to continuously:
 def receive_messages():
     while True:
         try:
-            message = clientSocket.recv(1024).decode()
-            if message:
-                print(f"\nReceived: {message}")
+            # Receive the encrypted token
+            token = clientSocket.recv(2048) 
+            if token:
+                # DECRYPT here before printing
+                message = decrypt_msg(token)
+                print(f"\nReceived (Decrypted): {message}")
             else:
-                print("\nServer closed the connection.")
                 break
-        except:
-            print("\nError receiving message.")
+        except Exception as e:
+            print(f"\nDecryption/Receive Error: {e}")
             break
-        
+           
 '''
 In the main thread, repeatedly:
     - Accept user input from the keyboard
