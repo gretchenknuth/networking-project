@@ -3,3 +3,7 @@ Networking final project - Gretchen Knuth, Yoyi Liao
 To run this program you need to run `pip install cryptography`
 
 Then you can run TCPServer and TCPClient on separate terminals/devices. Make sure to update the IP address and port number on each file to reflect your current environment.
+
+To broadcast a message, just type whatever the message is and send it.
+
+To send a direct message, add `@target ` before your message, where `target` is the username of another client connected to the server.
