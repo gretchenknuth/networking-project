@@ -71,16 +71,15 @@ In the main thread, repeatedly:
 '''
 def send_messages():
     while True:
-        message = input("Enter message to send (or 'q' to quit): ")
-        if message.lower() == 'q':
-            break
+        message = input("Enter message: ")
+        if message.lower() == 'q': break
         try:
-            clientSocket.sendall(message.encode())
+            # ENCRYPT here before sending over the wire
+            encrypted_data = encrypt_msg(message)
+            clientSocket.sendall(encrypted_data)
         except:
-            print("Error sending message.")
             break
-        time.sleep(0.1)  # Small delay to prevent overwhelming the server
-        
+         
 # Start the receive thread
 receive_thread = threading.Thread(target=receive_messages)
 receive_thread.daemon = True
