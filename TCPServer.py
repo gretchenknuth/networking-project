@@ -1,8 +1,20 @@
 from socket import *
 import threading
 
+# feature 3: AES encryption for messages
+from cryptography.fernet import Fernet
+
+SECRET_KEY = b'Your32ByteSecretKeyHereForAES_123=' 
+cipher_suite = Fernet(SECRET_KEY)
+
+def encrypt_msg(message):
+    return cipher_suite.encrypt(message.encode())
+
+def decrypt_msg(token):
+    return cipher_suite.decrypt(token).decode()
+
 # Replace '' with our IP address for vid!!
-IP = ""
+IP = "172.20.10.2"
 PORT = 45231
 active_clients = {} # username -> socket
 clients_lock = threading.Lock()
