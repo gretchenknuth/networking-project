@@ -28,7 +28,8 @@ def handle_client(conn, addr, user):
             if not data:
                 break
 
-            message = data.decode().strip()
+            # server decrypts to check for "@" command
+            message = decrypt_msg(data)
             
             if message.startswith("@"):
                 # Direct message
@@ -42,13 +43,17 @@ def handle_client(conn, addr, user):
                         conn.sendall(f"[to {target}] {content}".encode())
                     else:
                         conn.sendall(f"User '{target}' not found".encode())
+                target_conn.sendall(encrypt_msg(f"[from {user}] {content}"))
             else:
                 # Broadcast message to all other clients
                 with clients_lock:
                     for other_user, client in active_clients.items():
                         if client != conn:
                             client.sendall(f"[from {user}] {message}".encode())
-        except:
+                # ENCRYPT here before broadcasting
+                broadcast_encrypted(data, conn)
+        except Exception as e:
+            print(f"Error handling client {user}: {e}") 
             break
 
     print(f"{user} disconnected")
