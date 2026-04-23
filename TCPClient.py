@@ -5,7 +5,7 @@ import time
 # feature 3: AES encryption for messages
 from cryptography.fernet import Fernet
 
-SECRET_KEY = b'Your32ByteSecretKeyHereForAES_123=' 
+SECRET_KEY = b'HcCQN4C65TCgQN5FXy9lTkW1AP1A4bZ01tBjvqNJJRs=' 
 cipher_suite = Fernet(SECRET_KEY)
 
 def encrypt_msg(message):
