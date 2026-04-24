@@ -4,12 +4,15 @@ import threading
 # feature 3: AES encryption for messages
 from cryptography.fernet import Fernet
 
+# key used during encryption/decryption
 SECRET_KEY = b'HcCQN4C65TCgQN5FXy9lTkW1AP1A4bZ01tBjvqNJJRs=' 
 cipher_suite = Fernet(SECRET_KEY)
 
+# function to encrypt messages
 def encrypt_msg(message):
     return cipher_suite.encrypt(message.encode())
 
+# function to decrypt messages
 def decrypt_msg(token):
     return cipher_suite.decrypt(token).decode()
 
@@ -38,9 +41,12 @@ def handle_client(conn, addr, user):
 
                 with clients_lock:
                     if target in active_clients:
+                        # if the target is a connected user, send that user a direct message
                         active_clients[target].sendall(encrypt_msg(f"[from {user}] {content}"))
+                        # let the sender know that their message was sent
                         conn.sendall(encrypt_msg(f"[to {target}] {content}"))
                     else:
+                        # if the target is not a conencted user, let the sender know that that user doesn't exist
                         conn.sendall(encrypt_msg(f"User '{target}' not found"))
             else:
                 # Broadcast message to all other clients
@@ -48,10 +54,12 @@ def handle_client(conn, addr, user):
                     msg = encrypt_msg(f"[from {user}] {message}")
                     for other_user, client in active_clients.items():
                         if client != conn:
+                            # send the broadcast message to every user other than the sender
                             client.sendall(msg)
+                # print the encrypted message to the server console to show that it's actually doing something
                 print(f"\nReceived (Encrypted): {msg}")
-                print(cipher_suite.decrypt(msg))
         except Exception as e:
+            # catches any errors when dealing with the client
             print(f"Error handling client {user}: {e}") 
             break
 
@@ -87,8 +95,10 @@ while True:
         # Ensure unique usernames without spaces
         while username in active_clients or " " in username:
             if username in active_clients:
+                # if the chosen username is being used by other user, let the client choose another one
                 connection_socket.sendall(encrypt_msg("Username taken. Try another: "))
             else:
+                # usernames can't contain spaces due to how direct messages are parsed
                 connection_socket.sendall(encrypt_msg("Username cannot contain spaces. Try another: "))
             username = decrypt_msg(connection_socket.recv(1024)).strip()
         # Add username and socket to client dict

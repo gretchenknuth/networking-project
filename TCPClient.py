@@ -70,7 +70,8 @@ In the main thread, repeatedly:
 '''
 def send_messages():
     while True:
-        message = input("Enter message: ")
+        message = input("Enter message (press q to exit): ")
+        # clients can disconnect by entering the message `q`
         if message.lower() == 'q': break
         try:
             # ENCRYPT here before sending over the wire
