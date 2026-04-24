@@ -52,12 +52,15 @@ def handle_client(conn, addr, user):
                 # Broadcast message to all other clients
                 with clients_lock:
                     msg = encrypt_msg(f"[from {user}] {message}")
+                    # print the encrypted message to the server console to show that it's actually doing something
+                    print(f"\nReceived (Encrypted): {msg}")
                     for other_user, client in active_clients.items():
                         if client != conn:
                             # send the broadcast message to every user other than the sender
                             client.sendall(msg)
-                # print the encrypted message to the server console to show that it's actually doing something
-                print(f"\nReceived (Encrypted): {msg}")
+                        else:
+                            # let the sender know their message was broadcasted
+                            conn.sendall(encrypt_msg(f"[to all] {message}"))
         except Exception as e:
             # catches any errors when dealing with the client
             print(f"Error handling client {user}: {e}") 
